@@ -12,11 +12,11 @@ val forced_deal :
 
 val sly_deal : player -> player -> string * string -> player * player
 (** [sly_deal player1 player2 card] forces [player2] to give [card] to
-    [player2]. *)
+    [player1]. *)
 
 val debt_collector : player -> player -> int -> player * player
-(** [debt_collector player1 player2 debt] forces [player1] to pay [debt] to
-    [player2]. *)
+(** [debt_collector player1 player2 debt] forces [player2] to pay [debt] to
+    [player1]. *)
 
 val pass_go : player -> card list -> player * card list
 (** [pass_go player1 deck] allows [player1] to draw two cards from [deck]. *)
@@ -27,5 +27,14 @@ val its_my_birthday : player -> player list -> player list
 
 val charge_rent : player -> player -> string -> int -> player * player
 (** [charge_rent player1 player2 card mult] forces [player2] to pay [player1]
-    rent for [card] - if the player utilizes "Double the Rent" action cards, the
-    rent is multiplied by the given [mult]. *)
+    rent for [card], accounting for raised prices due to any present houses and
+    hotels on the property - if the player utilizes "Double the Rent" action
+    cards, the rent is multiplied by the given [mult]. *)
+
+val add_house : player -> string -> player
+(** [add_house player color] adds a house to [player]'s full [color] property
+    set. *)
+
+val add_hotel : player -> string -> player
+(** [add_hotel player color] adds a hotel to [player]'s full [color] property
+    set. Requires that [color] already has a house present. *)
