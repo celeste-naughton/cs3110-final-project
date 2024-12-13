@@ -6,6 +6,13 @@ open Scene
 open Bogue
 open Lwt.Infix
 
+let () =
+  Sys.set_signal Sys.sigint
+    (Sys.Signal_handle
+       (fun _ ->
+         print_endline "\n Qutting Program ...";
+         exit 0))
+
 let card_border =
   Style.(mk_border ~radius:8 (mk_line ~width:20 ~color:(255, 255, 255, 255) ()))
 
@@ -16,18 +23,6 @@ let property_border =
   Style.(mk_border ~radius:100 (mk_line ~width:2 ~color:(0, 0, 0, 255) ()))
 
 let white_bg = Style.(color_bg (255, 255, 255, 255))
-
-(* Create a promise that will be resolved when a card is clicked *)
-let promise, resolver = Lwt.task ()
-let card_promise = ref promise
-let card_resolver = ref resolver
-
-(* Add a ref to track popup state *)
-let popup_active = ref false
-
-(* Add this near the top with other global references *)
-let next_card_id = ref 0
-let card_info = Hashtbl.create 10
 
 let rec print_hand cards =
   match cards with
@@ -512,6 +507,26 @@ let gui_main () =
   in
 
   Bogue.run board
-;;
 
-gui_main ()
+let display_welcome_screen () =
+  let message =
+    {|
+  ╔════════════════════════════════════════════════╗
+  ║             Welcome to Monopoly Deal            ║
+  ║                                                ║
+  ║  🎮  A fast-paced card game of property trading ║
+  ║  💰  Collect properties, charge rent, and win!  ║
+  ║  🏆  Be the first to collect 3 full sets       ║
+  ║                                                ║
+  ║         Press Enter to start the game...       ║
+  ╚════════════════════════════════════════════════╝
+  |}
+  in
+  print_endline message;
+  let _ = read_line () in
+  ()
+
+let () =
+  display_welcome_screen ();
+  (* can also run alt_main here, command line version*)
+  gui_main ()
